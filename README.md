@@ -1,82 +1,31 @@
-# XRAY CRACKER
+# 如何获取Xray社区高级版
 
-> 支持到 1.2.0 版本，官方在 1.3.0 版本中更换了授权验证机制
+众所周知Xray是有社区版、社区高级版和企业版三个版本，其中企业版是一个完整的系统，需要进行商业采购才能获得
 
-前几天长亭官方有个活动，可以领2个月的xray社区高级版证书，正好趁这个机会逆向分析了一下xray的证书算法，写了一个证书生成器
+社区版是针对所有人免费提供的，而增加了子域名扫描和部分专项漏洞检测模块的社区高级版需要提交poc才能获得，下面介绍如何通过正规方式获取Xray社区高级版证书
 
-因为xray证书用到了rsa算法，所以需要替换xray程序中的公钥，将该功能也集成在工具中了
+## 1.学写poc
 
-相关算法分析文章后面有空再写，这里先放出写好的工具
+首先肯定是要先学会写poc啦，最基本的都不会那后面抢坑肯定抢不过别人
 
-## 工具使用
+要熟悉poc格式，通过阅读Xray官方文档中[自定义poc语法](https://docs.xray.cool/#/guide/poc)一节学习poc的基本结构和语法
 
-### 查看帮助
+单纯看文档难以理解，可以阅读[已有poc文件](https://github.com/chaitin/xray/tree/master/pocs)的内容，结合前辈们的样例进行学习
 
-使用 `-h` 查看帮助
+## 2.尽早占坑
 
-```
-PS > .\xray-cracker -h
-破解xray高级版证书，使用 -h 参数查看使用帮助
+官方要求poc是近三年比较流行系统的洞，洞有限而想要高级版的人无穷，所以要关注各种安全社区、论坛、报告和漏洞库，最好关注twitter上一些安全前辈，他们的消息比较灵通，消息越灵通占坑成功的几率越大
 
-Usage of xray-cracker:
-  -c string
-        替换xray程序内置公钥，需要指定xray程序文件路径
-  -g string
-        生成一个永久license，需要指定用户名
-  -p string
-        解析官方证书，需要指定证书路径
-```
+在写poc之前一定要先搜索一下仓库的pocs文件夹和PR列表，确保还没有被占坑，还要主要poc功能不能与已有扫描插件功能重复
 
-### 生成证书
+## 3.提交poc
 
-使用 `-g username` 生成永久证书
+写好poc后先在自己的本地环境中测试通过，通过xray自带的poclint功能检查基本语法，准备好漏洞分析文章和复现环境，最好是docker镜像，然后向Xray官方仓库发起PR，根据PR的模板填写poc信息，然后等待官方人员的审核
 
-```
-PS > .\xray-cracker -g "我叫啥"
-破解xray高级版证书，使用 -h 参数查看使用帮助
+同时还要主要遵守[官方文档](https://docs.xray.cool/#/guide/contribute?id=poc-%e8%b4%a1%e7%8c%ae%e8%a7%84%e8%8c%83)提到的一些提交规范
 
-证书已写入文件：xray-license.lic
-```
+## 4.申请证书
 
-### 破解xray
+提交1个poc后可以申请一个季度的高级版证书，提交3个poc可以获得一年的高级版证书
 
-使用 `-c path-to-xray` 修改xray内置公钥
-
-```
-PS > .\xray-cracker -c .\xray_windows_amd64.exe
-破解xray高级版证书，使用 -h 参数查看使用帮助
-
-public key index: 16741321
-文件写入成功： .\xray_windows_amd64.exe
-```
-
-> 工具虽然是windows平台下运行，但是照样可以破解其他平台xray  
-> 目前xray最新版是1.0.0，现在全平台全版本通杀
-
-
-## 破解效果
-
-使用修改版xray和永久证书后，效果如下
-
-```
-PS > .\xray_windows_amd64.exe version
-
- __   __  _____              __     __
- \ \ / / |  __ \      /\     \ \   / /
-  \ V /  | |__) |    /  \     \ \_/ /
-   > <   |  _  /    / /\ \     \   /
-  / . \  | | \ \   / ____ \     | |
- /_/ \_\ |_|  \_\ /_/    \_\    |_|
-
-
-Version: 1.0.0/62161168/COMMUNITY-ADVANCED
-Licensed to 我叫啥, license is valid until 2099-09-09 08:00:00
-
-[xray 1.0.0/62161168]
-Build: [2020-06-13] [windows/amd64] [RELEASE/COMMUNITY-ADVANCED]
-Compiler Version: go version go1.14.1 linux/amd64
-License ID: 00000000000000000000000000000000
-User Name: 我叫啥/00000000000000000000000000000000
-Not Valid Before: 2020-06-12 00:00:00
-Not Valid After: 2099-09-09 08:00:00
-```
+年费用户在证书有效期内只需要再提交1个poc就可以续费一年，每年可以这样续期一次，四舍五入一下就是永久白嫖
